@@ -1,39 +1,38 @@
-from networks import Net
+import models
 import numpy as np
 from torch.autograd import Variable
 from torch.utils.data import DataLoader
-from test_dataset import TestDataset
-import torch.nn as nn
+from dataset import TestDataset
 from skimage import io
 import matplotlib.pyplot as plt
+from config import DefaultConfig
 
-def reconstrution(pieces):
-    res = np.ones([600, 800])
-    index = 0
-    for i in range(75):
-        for j in range(100):
-            res[i*8:(i+1)*8, j*8:(j+1)*8] = pieces[index, :]
-            index += 1
+opt = DefaultConfig()
+
+
+def reconstruction(pieces):
+    res = np.ones([opt.raw_test_size, opt.raw_test_size])
+    scope = int(opt.raw_test_size / opt.patch_size)
+    for i in range(scope):
+        for j in range(scope):
+            res[i*opt.patch_size:(i+1)*opt.patch_size, j*opt.patch_size:(j+1)*opt.patch_size] = pieces[i*scope+j, :]
 
     return res
 
-net = Net()
-net.load('./checkpoints/CAE_Nearest2d.pth')
-criterion = nn.MSELoss()
-testDataset = TestDataset('./dataset/test_patches_csv/8-8.csv')
-test_dataloader = DataLoader(testDataset, batch_size=7500, shuffle=False)
+
+net = getattr(models, opt.model)()
+net.load(opt.load_model)
+
+testDataset = TestDataset(opt.test_patches_root + str(opt.patch_size) + '-' + str(opt.patch_size) + '.csv')
+s = int(opt.raw_test_size / opt.patch_size)
+test_dataloader = DataLoader(testDataset, batch_size=s * s, shuffle=False)
 
 for index, item in enumerate(test_dataloader, 0):
     inputs = item.float()
     inputs = Variable(inputs)
-
     outputs = net(inputs)
-
-    # loss = criterion(outputs, inputs)
-    # print(loss.data[0])
-    pieces = outputs.data.numpy()
-    img = reconstrution(pieces)
-
+    piece = outputs.data.numpy()
+    img = reconstruction(piece)
     io.imshow(img)
     plt.show()
 
