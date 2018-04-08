@@ -60,9 +60,3 @@ class CAE(nn.Module):
             prefix = opt.load_model_path + self.model_name + '_'
             name = time.strftime(prefix + '%m%d_%H:%M:%S.pth')
         torch.save(self.state_dict(), name)
-
-
-
-
-
-
