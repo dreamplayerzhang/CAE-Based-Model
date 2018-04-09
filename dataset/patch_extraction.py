@@ -3,10 +3,19 @@ from dataset import TextileData
 import numpy as np
 from config import DefaultConfig
 
-opt = DefaultConfig()
+opt = DefaultConfig()   # 加载配置文件
 
 
 def patches_generation(root='', patch_size=8, stride=4, mode='train', save2csv=False):
+    """
+
+    :param root:
+    :param patch_size:
+    :param stride:
+    :param mode: 'train' or 'test'
+    :param save2csv: True or False
+    :return: None
+    """
     if mode == 'train':
         root = opt.train_raw_data_root
         patch_size = opt.patch_size
@@ -45,7 +54,7 @@ def patches_generation(root='', patch_size=8, stride=4, mode='train', save2csv=F
         for i in range(int(h_scale)):
             for j in range(int(w_scale)):
                 section = raw_data[:, :, i*stride:i*stride + patch_size, j*stride:j*stride + patch_size]
-                patches[index*15:(index+1)*15] = section
+                patches[index*N:(index+1)*N] = section
                 index += 1
     elif mode == 'test':
         pass
@@ -63,7 +72,8 @@ def patches_generation(root='', patch_size=8, stride=4, mode='train', save2csv=F
         df = pd.DataFrame(patches_)
         if mode == 'train':
             path = opt.train_patches_root
+            # df = df.sample(n=50000)
         elif mode == 'test':
             path = opt.test_patches_root
-
+        print(df.values.shape)
         df.to_csv(path + str(patch_size) + '-' + str(stride) + '.csv')
