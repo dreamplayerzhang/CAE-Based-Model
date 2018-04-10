@@ -1,16 +1,13 @@
-
-
-
 from train import train
 from test import test
 from dataset import TrainDataset
 from config import DefaultConfig
 
-opt = DefaultConfig()
+# opt = DefaultConfig()
 
 
-trainDataset = TrainDataset(opt.train_patches_root + str(opt.patch_size) + '-' + str(opt.patch_stride) + '.csv')
-mean = trainDataset.mean_image
+# trainDataset = TrainDataset(opt.train_patches_root + str(opt.patch_size) + '-' + str(opt.patch_stride) + '.csv')
+mean = train()
 test(mean)
 
 

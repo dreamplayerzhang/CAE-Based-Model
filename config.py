@@ -1,13 +1,15 @@
 class DefaultConfig(object):
     env = 'default'     # visdom 环境
     model = 'CAE'       # 使用模型，名字与models/__init__.py中的名字一致
+    model_index = '004/'
+    pattern_index = '1/'
 
-    train_raw_data_root = './dataset/pattern/pattern1/'      # 训练原始数据集（正样本）的存放路径
-    test_raw_data_root = './dataset/bad_pattern/bad_pattern1/'   # 测试原始数据集（负样本）的存放路径
-    train_patches_root = './dataset/train_patches_csv/pattern1/'     # 提取后的训练数据集（正样本patches）存放路径
-    test_patches_root = './dataset/test_patches_csv/pattern1/'       # 提取后的测试数据集（正样本patches）存放路径
-    load_model_path = './checkpoints/pattern1/'      # 加载、保存训练模型的路径
-    load_model = './checkpoints/pattern1/128Patches.pth'      # 加载模型名称
+    train_raw_data_root = './dataset/pattern/pattern' + pattern_index    # 训练原始数据集（正样本）的存放路径
+    test_raw_data_root = './dataset/bad_pattern/bad_pattern' + pattern_index  # 测试原始数据集（负样本）的存放路径
+    train_patches_root = './dataset/train_patches_csv/pattern' + pattern_index     # 提取后的训练数据集（正样本patches）存放路径
+    test_patches_root = './dataset/test_patches_csv/pattern' + pattern_index       # 提取后的测试数据集（正样本patches）存放路径
+    load_model_path = './checkpoints/pattern' + pattern_index + model_index      # 加载、保存训练模型的路径
+    img_show_path = './img_show/pattern' + pattern_index
 
     raw_train_height = 600      # 训练原始数据（正样本）的图像高度
     raw_train_width = 800       # 训练原始数据（正样本）的图像宽度
@@ -18,9 +20,9 @@ class DefaultConfig(object):
     mean_value = 0
     use_gpu = True
     num_workers = 4
-    train_batch_size = 20
+    train_batch_size = 10
     print_freq = 50
-    max_epoch = 4
+    max_epoch = 10
     lr = 0.01
     lr_decay = 0.95
     weight_decay = 1e-4
