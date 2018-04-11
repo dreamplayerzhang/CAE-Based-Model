@@ -15,7 +15,8 @@ class TrainDataset(data.Dataset):
         self.mean_image = np.mean(self.df, axis=0)
 
     def __getitem__(self, item):
-        res = self.df[item] - self.mean_image
+        # res = self.df[item] - self.mean_image
+        res = self.df[item]
         return res
 
     def __len__(self):

@@ -3,16 +3,13 @@ from test import test
 from dataset import TrainDataset
 from config import DefaultConfig
 
-# opt = DefaultConfig()
+opt = DefaultConfig()
 
+# train()
+test(0)
 
-# trainDataset = TrainDataset(opt.train_patches_root + str(opt.patch_size) + '-' + str(opt.patch_stride) + '.csv')
-mean = train()
-test(mean)
-
-
-"""
-from dataset import patches_generation
-
-patches_generation(mode='test', save2csv=True)
-"""
+#
+# from dataset import patches_generation
+#
+# patches_generation(mode='train', save2csv=True)
+# patches_generation(mode='test', save2csv=True)

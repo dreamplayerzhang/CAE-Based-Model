@@ -1,8 +1,8 @@
 class DefaultConfig(object):
     env = 'default'     # visdom 环境
-    model = 'CAE'       # 使用模型，名字与models/__init__.py中的名字一致
-    model_index = '004/'
-    pattern_index = '1/'
+    model = 'CAE5'       # 使用模型，名字与models/__init__.py中的名字一致
+    model_index = '005/'
+    pattern_index = '3/'
 
     train_raw_data_root = './dataset/pattern/pattern' + pattern_index    # 训练原始数据集（正样本）的存放路径
     test_raw_data_root = './dataset/bad_pattern/bad_pattern' + pattern_index  # 测试原始数据集（负样本）的存放路径
@@ -20,9 +20,9 @@ class DefaultConfig(object):
     mean_value = 0
     use_gpu = True
     num_workers = 4
-    train_batch_size = 10
-    print_freq = 50
-    max_epoch = 10
+    train_batch_size = 5
+    print_freq = 100
+    max_epoch = 50
     lr = 0.01
     lr_decay = 0.95
     weight_decay = 1e-4

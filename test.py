@@ -42,12 +42,20 @@ def test(mean_value):
         outputs = outputs.data.numpy()
         outputs = outputs + mean_value
         res_img = reconstruction(outputs)
+        residual_img = res_img - raw_img
+        square_residual_img = residual_img * residual_img
 
         fig = plt.figure()
-        ax1 = fig.add_subplot(121)
+        ax1 = fig.add_subplot(221)
         ax1.imshow(raw_img)
 
-        ax2 = fig.add_subplot(122)
+        ax2 = fig.add_subplot(222)
         ax2.imshow(res_img)
+
+        ax3 = fig.add_subplot(223)
+        ax3.imshow(residual_img)
+
+        ax4 = fig.add_subplot(224)
+        ax4.imshow(square_residual_img)
         # plt.show()
         fig.savefig(opt.img_show_path + str(opt.patch_size) + '/' + opt.model_index + str(index) + '.png')
