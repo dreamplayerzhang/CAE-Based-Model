@@ -1,29 +1,24 @@
-import pandas as pd
 from dataset import TextileData
 import numpy as np
-from config import DefaultConfig
-
-opt = DefaultConfig()   # 加载配置文件
 
 
-def patches_generation(root='', patch_size=8, stride=4, mode='train', save2csv=False):
+def patches_generation(opt, root='', patch_size=8, stride=4, mode='train'):
     """
-
+    :param opt:
     :param root:
     :param patch_size:
     :param stride:
     :param mode: 'train' or 'test'
-    :param save2csv: True or False
-    :return: None
+    :return: patches
     """
     if mode == 'train':
-        root = opt.train_raw_data_root
+        root = opt.train_raw_data_root + opt.pattern_index + '/'
         patch_size = opt.patch_size
-        stride = opt.patch_stride
+        stride = opt.train_patch_stride
     elif mode == 'test':
-        root = opt.test_raw_data_root
+        root = opt.test_raw_data_root + opt.pattern_index + '/'
         patch_size = opt.patch_size
-        stride = patch_size
+        stride = opt.test_patch_stride
 
     raw_dataset = TextileData(root)
     N, W, H, C = len(raw_dataset), 0, 0, 0
@@ -32,8 +27,8 @@ def patches_generation(root='', patch_size=8, stride=4, mode='train', save2csv=F
         H = opt.raw_train_height
         C = opt.channel
     elif mode == 'test':
-        W = opt.raw_test_size
-        H = opt.raw_test_size
+        W = opt.raw_test_width
+        H = opt.raw_test_height
         C = opt.channel
 
     raw_data = np.ones([N, C, H, W])
@@ -41,11 +36,16 @@ def patches_generation(root='', patch_size=8, stride=4, mode='train', save2csv=F
     for index, item in enumerate(raw_dataset):
         raw_data[index] = item
 
+    if mode == 'test':
+        raw_data = np.pad(raw_data, ((0,), (0,), (stride,), (stride,)), mode='edge')
+
     w_scale = (W - patch_size)/stride + 1
     h_scale = (H - patch_size)/stride + 1
+    if mode=='test':
+        w_scale += 2
+        h_scale += 2
     total_patches = w_scale * h_scale * N
     total_patches = int(total_patches)
-    print(total_patches)
 
     patches = np.ones([total_patches, C, patch_size, patch_size])
     index = 0
@@ -65,15 +65,5 @@ def patches_generation(root='', patch_size=8, stride=4, mode='train', save2csv=F
                     patches[index] = section
                     index += 1
 
-    print(patches.shape)
+    return patches
 
-    if save2csv:
-        patches_ = np.reshape(patches, (total_patches, -1))
-        df = pd.DataFrame(patches_)
-        if mode == 'train':
-            path = opt.train_patches_root
-            df = df.sample(n=2000)
-        elif mode == 'test':
-            path = opt.test_patches_root
-        print(df.values.shape)
-        df.to_csv(path + str(patch_size) + '-' + str(stride) + '.csv')
