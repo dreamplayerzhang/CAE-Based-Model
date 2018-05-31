@@ -12,28 +12,36 @@ class CAE2(nn.Module):
         self.model_name = str(type(self))
 
         self.encoder = nn.Sequential(
-            nn.Conv2d(1, 16, 3, padding=1),
+            nn.Conv2d(1, 32, 5, padding=2),
             nn.ReLU(),
             nn.MaxPool2d((2, 2)),
-            nn.Conv2d(16, 32, 3, padding=1),
+            nn.Conv2d(32, 48, 5, padding=2),
             nn.ReLU(),
             nn.MaxPool2d((2, 2)),
-            nn.Conv2d(32, 64, 3, padding=1),
+            nn.Conv2d(48, 64, 5, padding=2),
             nn.ReLU(),
-            nn.Conv2d(64, 64, 3, padding=1),
+            nn.MaxPool2d((2, 2)),
+            nn.Conv2d(64, 96, 5, padding=2),
+            nn.ReLU(),
+            nn.MaxPool2d((2, 2)),
+            nn.Conv2d(96, 128, 5, padding=2),
             nn.ReLU(),
         )
 
         self.decoder = nn.Sequential(
-            nn.Conv2d(64, 64, 5, padding=2),
+            nn.ConvTranspose2d(128, 96, 5, padding=2),
             nn.ReLU(),
             nn.UpsamplingNearest2d(scale_factor=2),
-            nn.Conv2d(64, 32, 5, padding=2),
+            nn.ConvTranspose2d(96, 64, 5, padding=2),
             nn.ReLU(),
             nn.UpsamplingNearest2d(scale_factor=2),
-            nn.Conv2d(32, 16, 5, padding=2),
+            nn.ConvTranspose2d(64, 48, 5, padding=2),
             nn.ReLU(),
-            nn.Conv2d(16, 1, 5, padding=2),
+            nn.UpsamplingNearest2d(scale_factor=2),
+            nn.ConvTranspose2d(48, 32, 5, padding=2),
+            nn.ReLU(),
+            nn.UpsamplingNearest2d(scale_factor=2),
+            nn.ConvTranspose2d(32, 1, 5, padding=2),
             nn.ReLU(),
         )
 
@@ -46,7 +54,4 @@ class CAE2(nn.Module):
         self.load_state_dict(torch.load(path))
 
     def save(self, name=None):
-        if name is None:
-            prefix = opt.load_model_path + self.model_name + '_'
-            name = time.strftime(prefix + '%m%d_%H:%M:%S.pth')
         torch.save(self.state_dict(), name)

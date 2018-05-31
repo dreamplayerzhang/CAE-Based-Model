@@ -9,28 +9,15 @@ opt = DefaultConfig()
 class CAE1(nn.Module):
     def __init__(self):
         nn.Module.__init__(self)
-        self.model_name = str(type(self))
 
         self.encoder = nn.Sequential(
-            nn.Conv2d(1, 8, 3, padding=1),
-            nn.ReLU(),
-            nn.MaxPool2d((2, 2)),
-            nn.Conv2d(8, 16, 3, padding=1),
-            nn.ReLU(),
-            nn.MaxPool2d((2, 2)),
-            nn.Conv2d(16, 32, 3, padding=1),
-            nn.ReLU(),
+            nn.Conv2d(1, 150, 150, stride=50),
+            nn.ReLU(inplace=True),
         )
 
         self.decoder = nn.Sequential(
-            nn.Conv2d(32, 16, 3, padding=1),
-            nn.ReLU(),
-            nn.UpsamplingNearest2d(scale_factor=2),
-            nn.Conv2d(16, 8, 3, padding=1),
-            nn.ReLU(),
-            nn.UpsamplingNearest2d(scale_factor=2),
-            nn.Conv2d(8, 1, 3, padding=1),
-            nn.ReLU(),
+            nn.ConvTranspose2d(150, 1, 150, stride=50),
+            nn.ReLU(inplace=True),
         )
 
     def forward(self, x):
@@ -42,7 +29,4 @@ class CAE1(nn.Module):
         self.load_state_dict(torch.load(path))
 
     def save(self, name=None):
-        if name is None:
-            prefix = opt.load_model_path + self.model_name + '_'
-            name = time.strftime(prefix + '%m%d_%H:%M:%S.pth')
         torch.save(self.state_dict(), name)

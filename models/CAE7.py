@@ -1,0 +1,42 @@
+import torch.nn as nn
+import torch.nn.functional as F
+import torch
+import time
+from config import DefaultConfig
+
+opt = DefaultConfig()
+
+
+class CAE7(nn.Module):
+    def __init__(self):
+        nn.Module.__init__(self)
+        self.model_name = str(type(self))
+
+        self.encoder_conv1 = nn.Conv2d(1, 20, kernel_size=5, padding=0, stride=1)
+        self.encoder_conv2 = nn.Conv2d(20, 40, kernel_size=5, padding=0, stride=1)
+        self.encoder_conv3 = nn.Conv2d(40, 60, kernel_size=7, padding=0, stride=1)
+        self.encoder_conv4 = nn.Conv2d(60, 80, kernel_size=5, padding=0, stride=1)
+
+        self.decoder_deconv4= nn.ConvTranspose2d(80, 60, kernel_size=5, padding=0, stride=1)
+        self.decoder_deconv3 = nn.ConvTranspose2d(60, 40, kernel_size=7, padding=0, stride=1)
+        self.decoder_deconv2 = nn.ConvTranspose2d(40, 20, kernel_size=5, padding=0, stride=1)
+        self.decoder_deconv1 = nn.ConvTranspose2d(20, 1, kernel_size=5, padding=0, stride=1)
+
+    def forward(self, x):
+        x, indices1 = F.max_pool2d(F.relu(self.encoder_conv1(x)), kernel_size=2, stride=2, return_indices=True)
+        x, indices2 = F.max_pool2d(F.relu(self.encoder_conv2(x)), kernel_size=2, stride=2, return_indices=True)
+        x, indices3 = F.max_pool2d(F.relu(self.encoder_conv3(x)), kernel_size=2, stride=2, return_indices=True)
+        x = F.relu(self.encoder_conv4(x))
+
+        x = F.max_unpool2d(F.relu(self.decoder_deconv4(x)), indices=indices3, kernel_size=2, stride=2)
+        x = F.max_unpool2d(F.relu(self.decoder_deconv3(x)), indices=indices2, kernel_size=2, stride=2)
+        x = F.max_unpool2d(F.relu(self.decoder_deconv2(x)), indices=indices1, kernel_size=2, stride=2)
+        x = F.relu(self.decoder_deconv1(x))
+
+        return x
+
+    def load(self, path):
+        self.load_state_dict(torch.load(path))
+
+    def save(self, name=None):
+        torch.save(self.state_dict(), name)

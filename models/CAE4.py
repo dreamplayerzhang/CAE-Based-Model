@@ -12,12 +12,12 @@ class CAE4(nn.Module):
         self.model_name = str(type(self))
 
         self.encoder = nn.Sequential(
-            nn.Conv2d(1, 60, 64, stride=32),
+            nn.Conv2d(1, 100, 50, stride=25),
             nn.ReLU(inplace=True),
         )
 
         self.decoder = nn.Sequential(
-            nn.ConvTranspose2d(60, 1, 64, stride=32),
+            nn.ConvTranspose2d(100, 1, 50, stride=25),
             nn.ReLU(inplace=True),
         )
 
@@ -30,7 +30,4 @@ class CAE4(nn.Module):
         self.load_state_dict(torch.load(path))
 
     def save(self, name=None):
-        if name is None:
-            prefix = opt.load_model_path + self.model_name + '_'
-            name = time.strftime(prefix + '%m%d_%H:%M:%S.pth')
         torch.save(self.state_dict(), name)

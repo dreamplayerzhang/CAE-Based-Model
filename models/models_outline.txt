@@ -1,0 +1,65 @@
+CAE1:
+single layer (Experimental)
+kernel_size:150 (aim to enlarge receptive field)
+stride: 50 (use larger stride to replace maxpooling, aim to decrease the size of feature_map)
+corresponding deconv_layer to reconstruct input
+applied patch_size: 200*200
+
+
+CAE2:
+five layers based
+multiple conv_layers(padding='SAME') + maxpooling(ensure final receptive field up to 100*100), but not save indices
+corresponding deconv_layers + Upsample
+applied patch_size: 128*128
+
+CAE3:
+
+
+CAE4:
+single layer (Experimental)
+kernel_size:50 (aim to enlarge receptive field)
+stride: 25 (use larger stride to replace maxpooling, aim to decrease the size of feature_map)
+corresponding deconv_layer to reconstruct input
+applied patch_size: 100*100
+
+
+CAE5:
+single layer (Experimental)
+kernel_size:100 (aim to enlarge receptive field)
+stride: 50 (use larger stride to replace maxpooling, aim to decrease the size of feature_map)
+corresponding deconv_layer to reconstruct input
+applied patch_size: 200*200
+
+
+CAE6:
+four layers based CAE5
+multiple conv_layers + maxpooling + indices (ensure final receptive field up to 100*100)
+corresponding deconv_layers + unpooling with indices
+applied patch_size: 200*200
+
+
+CAE6_1:
+four layers based CAE6 for comparision
+multiple conv_layers + maxpooling(ensure final receptive field up to 100*100), but not save indices
+corresponding deconv_layers + Upsample
+applied patch_size: 200*200
+
+
+CAE6_2:
+four layers based CAE6 for comparision
+The network architecture is same as CAE6, only the number of kernels in each layer was decreased by half
+applied patch_size: 200*200
+
+
+CAE7:
+four layers based CAE4
+multiple conv_layers + maxpooling + indices (ensure final receptive field up to 50*50)
+corresponding deconv_layers + unpooling with indices
+applied patch_size: 100*100
+
+
+CAE8:
+five layers based CAE4
+multiple conv_layers + maxpooling + indices (ensure final receptive field up to 50*50)
+corresponding deconv_layers + unpooling with indices
+applied patch_size: 100*100
