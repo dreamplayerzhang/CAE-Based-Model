@@ -1,15 +1,14 @@
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = '2'
 from train import train
 from test import test
-from dataset import TrainDataset
 from config import DefaultConfig
 
 opt = DefaultConfig()
 
-# train()
-test(0)
+train(opt, initialize=True)
+test(opt)
 
-#
-# from dataset import patches_generation
-#
-# patches_generation(mode='train', save2csv=True)
-# patches_generation(mode='test', save2csv=True)
+
+# for item in os.listdir(opt.load_model_path):
+#     test(opt, load_model_path=item)
